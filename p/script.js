@@ -63,3 +63,52 @@
     }
 
     scrollLoop();
+
+// HTMLからJSONデータを取得
+function getWatchesFromHTML() {
+  const el = document.getElementById('watch-data');
+  if (!el) return [];
+  try {
+    return JSON.parse(el.textContent);
+  } catch (e) {
+    console.error('JSON parse error', e);
+    return [];
+  }
+}
+
+// スマートウォッチリストを描画する関数
+function renderWatchList(list) {
+  const container = document.getElementById('watch-list');
+  if (!container) return;
+  container.innerHTML = '';
+  list.forEach(watch => {
+    const card = document.createElement('div');
+    card.className = 'watch-card';
+    card.innerHTML = `
+      <h3>${watch.name}</h3>
+      <div><strong>価格:</strong> ${watch.priceText}</div>
+      <div><strong>👍 良いところ:</strong><ul>${watch.pros.map(p => `<li>${p}</li>`).join('')}</ul></div>
+      <div><strong>🧐 デメリット:</strong><ul>${watch.cons.map(c => `<li>${c}</li>`).join('')}</ul></div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// 価格順ソートボタン
+function addSortButton(watches) {
+  const container = document.getElementById('watch-list');
+  if (!container) return;
+  const btn = document.createElement('button');
+  btn.textContent = '価格が安い順に並べる';
+  btn.onclick = () => {
+    const sorted = [...watches].sort((a, b) => a.price - b.price);
+    renderWatchList(sorted);
+  };
+  container.parentNode.insertBefore(btn, container);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const watches = getWatchesFromHTML();
+  renderWatchList(watches);
+  addSortButton(watches);
+});
