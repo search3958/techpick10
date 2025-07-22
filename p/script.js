@@ -78,37 +78,36 @@ function getWatchesFromHTML() {
 
 // スマートウォッチリストを描画する関数
 function renderWatchList(list) {
-  const container = document.getElementById('watch-list');
+  const container = document.querySelector('.articles');
   if (!container) return;
   container.innerHTML = '';
   list.forEach(watch => {
     const card = document.createElement('div');
-    card.className = 'watch-card';
-    card.innerHTML = `
-      <h3>${watch.name}</h3>
-      <div><strong>価格:</strong> ${watch.priceText}</div>
-      <div><strong>👍 良いところ:</strong><ul>${watch.pros.map(p => `<li>${p}</li>`).join('')}</ul></div>
-      <div><strong>🧐 デメリット:</strong><ul>${watch.cons.map(c => `<li>${c}</li>`).join('')}</ul></div>
+    card.className = 'card';
+    // 画像
+    if (watch.img) {
+      const img = document.createElement('img');
+      img.src = watch.img;
+      img.alt = 'スマートウォッチ';
+      card.appendChild(img);
+    }
+    const content = document.createElement('div');
+    content.className = 'card-content';
+    content.innerHTML = `
+      <h2 class="card-title">${watch.name}</h2>
+      <div class="card-info">${watch.priceText}</div>
+      <p class="card-excerpt">${watch.excerpt ? watch.excerpt : ''}</p>
+      <h3 class="card-title">👍 良いところ</h3>
+      <p class="card-excerpt">${watch.pros.map(p => p).join('<br>')}</p>
+      <h3 class="card-title">🧐 デメリット</h3>
+      <p class="card-excerpt">${watch.cons.map(c => c).join('<br>')}</p>
     `;
+    card.appendChild(content);
     container.appendChild(card);
   });
-}
-
-// 価格順ソートボタン
-function addSortButton(watches) {
-  const container = document.getElementById('watch-list');
-  if (!container) return;
-  const btn = document.createElement('button');
-  btn.textContent = '価格が安い順に並べる';
-  btn.onclick = () => {
-    const sorted = [...watches].sort((a, b) => a.price - b.price);
-    renderWatchList(sorted);
-  };
-  container.parentNode.insertBefore(btn, container);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   const watches = getWatchesFromHTML();
   renderWatchList(watches);
-  addSortButton(watches);
 });
