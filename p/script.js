@@ -81,7 +81,8 @@ function renderWatchList(list) {
   const container = document.querySelector('.articles');
   if (!container) return;
   container.innerHTML = '';
-  list.forEach(watch => {
+  
+  list.forEach((watch, index) => {
     const card = document.createElement('div');
     card.className = 'card';
     // 画像
@@ -104,6 +105,27 @@ function renderWatchList(list) {
     `;
     card.appendChild(content);
     container.appendChild(card);
+    
+    // 5個目と10個目の後に広告を挿入
+    if (index === 4 || index === 9) {
+      const adContainer = document.createElement('div');
+      adContainer.className = 'ad-container';
+      adContainer.innerHTML = `
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6151036058675874"
+             crossorigin="anonymous"></script>
+        <!-- TechPick10 -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-6151036058675874"
+             data-ad-slot="3599327401"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      `;
+      container.appendChild(adContainer);
+    }
   });
 }
 
